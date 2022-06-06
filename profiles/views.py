@@ -13,10 +13,10 @@ from .models import Profile
 """
 
 
-def profiles_index(request):
+def index(request):
     profiles_list = Profile.objects.all()
     context = {'profiles_list': profiles_list}
-    return render(request, 'profiles_index.html', context)
+    return render(request, 'profiles/index.html', context)
 
 
 """
@@ -30,4 +30,4 @@ def profiles_index(request):
 def profile(request, username):
     profile = Profile.objects.get(user__username=username)
     context = {'profile': profile}
-    return render(request, 'profile.html', context)
+    return render(request, 'profiles/profile.html', context)
