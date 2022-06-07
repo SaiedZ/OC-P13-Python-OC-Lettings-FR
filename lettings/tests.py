@@ -1,13 +1,12 @@
 """
-Tests for the teams views.
+Tests for the lettings views.
 """
 
 from django.test import TestCase
 from django.test import Client
 from django.urls import reverse
 
-from lettings import views  # noqa
-from lettings import models  # noqa
+from lettings import models
 
 LETTING_INDEX_URL = reverse("lettings_index")
 

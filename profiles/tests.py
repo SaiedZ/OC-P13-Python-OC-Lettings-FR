@@ -1,5 +1,5 @@
 """
-Tests for the teams views.
+Tests for the profiles views.
 """
 
 from django.test import TestCase
