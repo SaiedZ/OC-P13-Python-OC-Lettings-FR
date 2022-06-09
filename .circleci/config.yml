@@ -6,12 +6,11 @@ orbs:
 jobs:
   build-and-test:
     executor: python/default
-    environment:
-      PYTHONPATH=../
     steps:
       - checkout
       - python/install-deps
-      - python/test
+      - run:
+          command: pytest
 
 workflows:
   main:
