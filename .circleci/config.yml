@@ -10,7 +10,11 @@ jobs:
       - checkout
       - python/install-deps
       - run:
+          name: django-tests
           command: pytest
+      - run:
+          name: flake8-lint
+          command: flake8
 
 workflows:
   main:
