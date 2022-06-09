@@ -1,14 +1,14 @@
 version: 2.1
 
+orbs:
+  python: circleci/python@0.3.2
+
 jobs:
-  build:
-    docker:
-      - image: cimg/python:3.10
+  build-and-test:
+    executor: python/default
     steps:
       - checkout
-      - run:
-          name: install-dependencies
-          command: pip install -r requirements.txt
+      - python/install-deps
       - run:
           name: django-tests
           command: pytest
@@ -19,4 +19,4 @@ jobs:
 workflows:
   main:
     jobs:
-      - build
+      - build-and-test
