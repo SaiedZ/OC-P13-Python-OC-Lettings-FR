@@ -7,7 +7,7 @@ jobs:
   build-and-test:
     executor: python/default
     environment:
-      PYTHONPATH=.
+      PYTHONPATH=../
     steps:
       - checkout
       - python/install-deps
