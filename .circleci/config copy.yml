@@ -4,19 +4,18 @@ version: 2.1
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+
+orbs:
+  python: circleci/python@0.3.2
+
 jobs:
-  build:
-    docker:
-      - image: cimg/python:3.10.1
+  build-and-test:
+    executor: python/default
     steps:
       - checkout
       - restore_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
-      - run:
-          command: |
-            python -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
+      - python/install-deps
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
           paths:
