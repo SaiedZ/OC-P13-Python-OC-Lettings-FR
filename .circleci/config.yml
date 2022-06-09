@@ -11,7 +11,7 @@ jobs:
       - python/install-deps
       - python/test
 
-worflows:
+workflows:
   main:
     jobs:
       - build-and-test
