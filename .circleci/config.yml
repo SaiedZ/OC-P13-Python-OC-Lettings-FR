@@ -13,8 +13,11 @@ jobs:
     executor: python/default
     steps:
       - checkout
+<<<<<<< HEAD
       - python/install-deps
       - python/test
+=======
+>>>>>>> 31151932075be2726fc01bf7b6310c02f1247bf1
 
 worflows:
   main:
