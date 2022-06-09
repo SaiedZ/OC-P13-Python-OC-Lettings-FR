@@ -1,3 +1,7 @@
+## CircleCi status
+
+[![CircleCI](https://circleci.com/gh/SaiedZ/OC-P13-Python-OC-Lettings-FR/tree/master.svg?style=svg)](https://circleci.com/gh/SaiedZ/OC-P13-Python-OC-Lettings-FR/tree/master)
+
 ## Résumé
 
 Site web d'Orange County Lettings
