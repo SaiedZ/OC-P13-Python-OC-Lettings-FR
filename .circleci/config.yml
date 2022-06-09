@@ -1,5 +1,12 @@
 version: 2.1
 
+
+workflows:
+  main:
+    jobs:
+      - build-and-test
+
+
 jobs:
   build-and-test:
     docker:
@@ -21,8 +28,3 @@ jobs:
       - run:
           name: Lingting with flake8
           command: flake8
-
-workflows:
-  main:
-    jobs:
-      - build-and-test
