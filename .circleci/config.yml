@@ -40,12 +40,13 @@ jobs:
           command: flake8
 
   build-push-docker:
-    docker:
-      - image: cimg/base:stable
+    # docker:
+    #  - image: cimg/base:stable
+    machine: true
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.14
+    #  - setup_remote_docker: # https://circleci.com/docs/2.0/building-docker-images/
+    #      version: 20.10.14
       - run:
           name: Build Docker image
           command: docker build -t $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 .
@@ -55,7 +56,8 @@ jobs:
             echo "$DOCKER_HUB_ACCESS_TOKEN" | docker login --username $DOCKER_HUB_USERNAME --password-stdin
       # build the application image
       - run:
-          name: Tging and pushing the docker image
+          name: Taging and pushing the docker image
           command:  |
             docker tag $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:latest
             docker push $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1
+
