@@ -7,7 +7,7 @@ workflows:
       - build-and-test
       - push-docker:
           requires:
-            - tests
+            - build-and-test
 
 
 jobs:
