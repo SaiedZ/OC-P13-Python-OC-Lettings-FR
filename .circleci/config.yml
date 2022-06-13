@@ -1,13 +1,22 @@
 version: 2.1
 
+orbs:
+  # python: circleci/python@2.0.3
+  heroku: circleci/heroku@1.2.6
 
 workflows:
-  main:
+  build_test_push_docker_deploy_heroku:
     jobs:
       - build-and-test
       - build-push-docker:
           requires:
-            - build-and-test
+            - build-and-test # build image and push only if tests succeeded.
+      - deploy-heroku:
+          requires:
+            - build-push-docker
+          filters:
+            branches:
+              only: master # only deploy when on master
 
 
 jobs:
@@ -24,7 +33,9 @@ jobs:
 
       - run:
           name: Installing dependencies
-          command: pip install -r requirements.txt
+          command: |
+            pip install --upgrade pip &&
+            pip install -r requirements.txt
 
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
@@ -58,6 +69,13 @@ jobs:
       - run:
           name: Taging with hash commit and pushing the docker image
           command:  |
-            docker tag $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 ${DOCKER_HUB_USERNAME}/$DOCKER_REPO_NAME:latest
+            docker tag $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:latest
             docker push $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1
 
+  deploy: # this can be any name you choose
+      executor: heroku/default # use the default executor defined within the orb
+      steps:
+        - attach_workspace:
+            at: ~/project
+        - heroku/deploy-via-git:
+            force: true # force push when pushing to the heroku remote, see: https://devcenter.heroku.com/articles/git
