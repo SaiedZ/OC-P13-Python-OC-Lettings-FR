@@ -46,4 +46,4 @@ jobs:
     steps:
       - run:
           name: login
-          command: docker login --username ${DOCKER_HUB_USERNAME} --password-stdin ${DOCKER_HUB_ACCESS_TOKEN}
+          command: docker login --username $DOCKER_HUB_USERNAME --password-stdin $DOCKER_HUB_ACCESS_TOKEN
