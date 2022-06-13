@@ -5,7 +5,9 @@ workflows:
   main:
     jobs:
       - build-and-test
-      - push-docker
+      - push-docker:
+          requires:
+            - tests
 
 
 jobs:
