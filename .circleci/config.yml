@@ -5,7 +5,7 @@ workflows:
   main:
     jobs:
       - build-and-test
-      - push-docker:
+      - build-push-docker:
           requires:
             - build-and-test
 
@@ -47,3 +47,15 @@ jobs:
       - run:
           name: login
           command: docker login --username $DOCKER_HUB_USERNAME --password-stdin $DOCKER_HUB_ACCESS_TOKEN
+
+  build-push-docker:
+    machine: true
+    steps:
+      - checkout
+      - run: |
+          echo "$DOCKER_HUB_ACCESS_TOKEN" | docker login --username $DOCKER_HUB_USERNAME --password-stdin
+      # build the application image
+      - run: docker build -t $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_BRANCH .
+
+      # deploy the image
+      - run: docker push $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_BRANCH
