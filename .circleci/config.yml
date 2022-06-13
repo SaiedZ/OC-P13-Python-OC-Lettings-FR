@@ -39,19 +39,9 @@ jobs:
           name: Lingting with flake8
           command: flake8
 
-  push-docker:
-    docker:
-      - image: docker
-
-    steps:
-      - run:
-          name: login
-          command: docker login --username $DOCKER_HUB_USERNAME --password-stdin $DOCKER_HUB_ACCESS_TOKEN
-
   build-push-docker:
-    # machine: true
     docker:
-      - image: docker
+      - image: cimg/base:stable
     steps:
       - checkout
       - run:
@@ -59,7 +49,9 @@ jobs:
           command: |
             echo "$DOCKER_HUB_ACCESS_TOKEN" | docker login --username $DOCKER_HUB_USERNAME --password-stdin
       # build the application image
-      # - run: docker build -t $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 .
+      - run:
+          name: Building the Docker Image
+          command: docker build -t $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 .
 
       # deploy the image
       # - run: docker push $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1
