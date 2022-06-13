@@ -40,8 +40,8 @@ jobs:
           command: flake8
 
   build-push-docker:
-    # docker:
-    #  - image: cimg/base:stable
+    # docker: # https://circleci.com/docs/2.0/building-docker-images/
+    #  - image: cimg/base:stable # using the machine: true is intresting because we won't need the setup_remote_docker
     machine: true
     steps:
       - checkout
@@ -56,8 +56,8 @@ jobs:
             echo "$DOCKER_HUB_ACCESS_TOKEN" | docker login --username $DOCKER_HUB_USERNAME --password-stdin
       # build the application image
       - run:
-          name: Taging and pushing the docker image
+          name: Taging with hash commit and pushing the docker image
           command:  |
-            docker tag $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:latest
+            docker tag $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 ${DOCKER_HUB_USERNAME}/$DOCKER_REPO_NAME:latest
             docker push $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1
 
