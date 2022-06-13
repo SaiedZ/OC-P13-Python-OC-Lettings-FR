@@ -44,6 +44,8 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
+      - setup_remote_docker:
+        version: 20.10.14
       - run:
           name: Build Docker image
           command: docker build -t $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 .
