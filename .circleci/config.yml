@@ -48,10 +48,11 @@ jobs:
           name: Loging to Docker
           command: |
             echo "$DOCKER_HUB_ACCESS_TOKEN" | docker login --username $DOCKER_HUB_USERNAME --password-stdin
+            docker build -t $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 .
       # build the application image
-      - run:
-          name: Building the Docker Image
-          command: docker build -t $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 .
+      #- run:
+      #    name: Building the Docker Image
+      #    command: docker build -t $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 .
 
       # deploy the image
       # - run: docker push $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1
