@@ -13,8 +13,13 @@ COPY . .
 
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
-    /py/bin/pip install -r requirements.txt
+    /py/bin/pip install --no-cache-dir -r requirements.txt && \
+    /py/bin/python manage.py migrate
 
 EXPOSE 8000
 
 ENV PATH="/py/bin:$PATH"
+
+# CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "oc_lettings_site.wsgi:application"]
+
+CMD gunicorn oc_lettings_site.wsgi:application --bind 0.0.0.0:$PORT
