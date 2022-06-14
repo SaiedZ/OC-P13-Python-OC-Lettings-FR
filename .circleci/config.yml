@@ -89,7 +89,7 @@ jobs:
         - run: docker pull $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1
         - run: docker tag $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 registry.heroku.com/$HEROKU_APP_NAME/web
         - run: docker push registry.heroku.com/$HEROKU_APP_NAME/web
-        - run: heroku container:release web
+        - run: heroku container:release -a $HEROKU_APP_NAME web
         # - heroku/deploy-via-git:
         #    force: true # force push when pushing to the heroku remote, see: https://devcenter.heroku.com/articles/git
         # - run: heroku run python manage.py -x migrate -a $HEROKU_APP_NAME
