@@ -39,7 +39,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # to manage static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # to manage static files
 ]
 
 ROOT_URLCONF = 'oc_lettings_site.urls'
