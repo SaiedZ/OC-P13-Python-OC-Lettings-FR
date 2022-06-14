@@ -1,6 +1,8 @@
-## CircleCi status
+## Status
 
-[![CircleCI](https://circleci.com/gh/SaiedZ/OC-P13-Python-OC-Lettings-FR/tree/master.svg?style=svg)](https://circleci.com/gh/SaiedZ/OC-P13-Python-OC-Lettings-FR/tree/master)
+<span>[![CircleCI](https://circleci.com/gh/SaiedZ/OC-P13-Python-OC-Lettings-FR/tree/master.svg?style=svg)](https://circleci.com/gh/SaiedZ/OC-P13-Python-OC-Lettings-FR/tree/master)
+![Heroku](https://heroku-badge.herokuapp.com/?app=oc-letting)</span>
+
 
 ## Résumé
 
