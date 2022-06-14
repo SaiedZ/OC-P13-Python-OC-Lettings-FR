@@ -78,6 +78,8 @@ jobs:
         - attach_workspace:
             at: ~/project
         - checkout
+        - setup_remote_docker: # https://circleci.com/docs/2.0/building-docker-images/
+            version: 20.10.14
         - heroku/install
         - run:
             name: Loging to Docker
