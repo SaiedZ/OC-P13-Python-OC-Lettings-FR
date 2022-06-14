@@ -1,5 +1,8 @@
-import os
 import django_heroku
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -118,3 +121,20 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # This will automatically configure DATABASE_URL, ALLOWED_HOSTS, WhiteNoise (for static assets),
 # Logging, and Heroku CI for your application.
 django_heroku.settings(locals())
+
+
+sentry_sdk.init(
+    dsn="https://ba278d684f2345ab8a5fb18b33b030d8@o1288491.ingest.sentry.io/6505418",
+    integrations=[
+        DjangoIntegration(),
+    ],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
