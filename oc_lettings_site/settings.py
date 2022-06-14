@@ -1,6 +1,7 @@
 import django_heroku
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from decouple import config
 
 import os
 
@@ -12,10 +13,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'fp$9^593hsriajg$_%=5trot9g!1qa@ew(o-1#@=&4%=hp46(s'
+SECRET_KEY = config('SECRET_KEY', default='foo')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'oc-letting.herokuapp.com']
 
@@ -122,9 +123,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Logging, and Heroku CI for your application.
 django_heroku.settings(locals())
 
-
+# Sentry configuration
 sentry_sdk.init(
-    dsn="https://ba278d684f2345ab8a5fb18b33b030d8@o1288491.ingest.sentry.io/6505418",
+    dsn=config('SENTRY_DSN', default=""),
     integrations=[
         DjangoIntegration(),
     ],
@@ -132,9 +133,12 @@ sentry_sdk.init(
     # Set traces_sample_rate to 1.0 to capture 100%
     # of transactions for performance monitoring.
     # We recommend adjusting this value in production.
+    # Events are picked randomly.
     traces_sample_rate=1.0,
 
     # If you wish to associate users to errors (assuming you are using
     # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=True
+    send_default_pii=True,
+    # Environments tell you where an error occurred
+    environment=config('SENTRY_ENVIRONMENT', default='devloppement')
 )
