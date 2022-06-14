@@ -6,14 +6,18 @@ LABEL maintainer="Deias"
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# This directory will contain the code which currently resides in
+# set work directory
 WORKDIR /app
+
 # copy the current directory in you local machine to /app in image
 COPY . .
 
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
-    /py/bin/pip install --no-cache-dir -r requirements.txt && \
+    /py/bin/pip install --no-cache-dir -r requirements.txt
+
+# collect static files and migrate
+RUN /py/bin/python manage.py collectstatic --noinput && \
     /py/bin/python manage.py migrate
 
 EXPOSE 8000
