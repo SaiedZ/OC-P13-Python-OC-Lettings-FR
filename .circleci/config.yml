@@ -86,6 +86,7 @@ jobs:
             command: |
               echo "$DOCKER_HUB_ACCESS_TOKEN" | docker login --username $DOCKER_HUB_USERNAME --password-stdin
         - run: docker login --username=$HEROKU_LOGIN --password=$HEROKU_API_KEY registry.heroku.com
+        - run: docker pull $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1
         - run: docker tag $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 registry.heroku.com/$HEROKU_APP_NAME/web
         - run: docker push registry.heroku.com/$HEROKU_APP_NAME/web
         - run: heroku container:release web
