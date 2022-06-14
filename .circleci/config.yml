@@ -44,8 +44,9 @@ jobs:
 
       - run:
           name: Runing tests
-          command: pytest
-
+          command: pytest --html=./test_results/$CIRCLE_SHA1/pytest-report.html --self-contained-html
+      - store_artifacts:
+          path: test_results
       - run:
           name: Lingting with flake8
           command: flake8
