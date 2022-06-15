@@ -83,7 +83,7 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
 
 
-## CI/CD - Intégration continue / déploiement continu
+## CI/CD - Intégration continue / Livraison continue
 
 ### Description du process CI/CD
 
@@ -94,7 +94,7 @@ Le pipeline a été mis en place via CircleCi. Il est constitué des étapes sui
 -   Déploiement sur heroku  à partir de l'image envoyée précédemment sur dockerhub.
 
 > *Chaque étape doit être complétée avec succès pour passer à la suivante.*
-> *La troisième étape à savoir le déploiement sur heroku n'est enclenché que les commit faits sur la branche **master**.*
+> *La troisième étape à savoir le déploiement sur heroku n'est enclenché que les commit faits sur la branche **master***
 
 Chacune de ces trois étapes est détaillées dans le graph ci-dessous.
 
@@ -131,10 +131,94 @@ flowchart LR
 
 ### Configuration
 
-#### Prérequis
+### Github
 
--   Un compte GitHub
--   Un compte Docker et installation en local
--   Un compte CircleCI relié au compte Github
--   Un compte Heroku
--   Un compte Sentry
+Commencez par cloner le projet en local en suivant les étapes indiquées plus haut.
+
+### Docker
+
+#### Démarrer avec docker
+
+ Commencer par créer un compte [docker](https://docker.com/) si ce n'est pas fait et [installer](https://docs.docker.com/get-docker/) le sur votre machine.
+
+> [Documentation pour python](https://docs.docker.com/language/python/)
+
+La configuration de la conteneurisation est située dans le fichier suivant `Dockerfile`  à la racine du projet.
+Un fichier `.dockerignore` a été créé pour ne pas prendre en compte certains fichiers lors de la création de l'image.
+
+Ce fichier est utilisé après l'étape de teste s'ils réussissent. Il permet de construire l'image, afin qu'elle soit par la suite envoyé sur dockerhub avec le tag du commit. Cette partie est gérée dans le fichier de configuration de CircleCi `.circleci/config.yml`.
+
+L'adresse du dépôt docker hub est :  [https://hub.docker.com/r/deias/oc-lettings](https://hub.docker.com/r/deias/oc-lettings) .
+
+Pour copier l'image en local vous pouvez taper: `docker pull deias/oc-lettings:<tag>`
+
+!! Le tag doit être remplacé par version que vous souhaitez récupérer (voir [dockerhub](https://hub.docker.com/r/deias/oc-lettings/tags)).
+
+#### Créer le Access Token
+
+> [Documentation officielle sur la création du token](https://docs.docker.com/docker-hub/access-tokens/)
+
+-   Se connecter au compte sur  [DockerHub](https://hub.docker.com/).
+-   Aller dans  `Account Settings` puis à l'onglet  `Security`.
+-   Cliquer sur  `New Access Token`.
+-   Sélectionner  `Read, Write, Delete`.
+-   Copier le token généré
+-   Coller le token dans le champ de la variable d'environnement `DOCKER_HUB_ACCESS_TOKEN` sur CircleCI.
+
+#### Démarrer l'application à partir de  l'image la plus récente stockée sur dockerhub
+
+Taper cette commande dans l'interface de commande:
+
+`docker run -d --name oc-lettings -e "PORT=8765" -e "DEBUG=1" -p 8000:8765 deias/oc-lettings:<tag>`
+
+!! Remplacer `tag` par le tag de la version souhaitée ([liste des tags](https://hub.docker.com/r/deias/oc-lettings/tags)).
+
+`oc-lettings`  sera le nom de notre container.
+
+Vous pouvez vous connecter à l'application en allant sur l'adresse suivante: [http://127.0.0.1:8000](http://127.0.0.1:8000/).
+
+`-d` permet de démarrer l'application en arrière plan.
+
+Vous pouvez vérifier cela en tapant:  `docker ps`
+Pour enlever les conteneurs en cours d'exécution :
+
+    docker stop oc-lettings
+    docker rm oc-lettings
+
+#### Construire l'image Docker et lancer le site en local
+
+Si vous travailler en local et que vous avez besoin de tester l'image sans passer par le pipline, à la racine du projet utilisez les commandes :
+
+    docker build -t oc-lettings:dev .
+    docker run -e "PORT=8765" -p 8000:8000 oc-lettings:dev
+
+> dev est juste un tag que vous pouvez remplacez au besoin.
+> -e "PORT=8765" permet de définir une variable d'environnement qui sera gérée par heroku lors de la phase de déploiement.
+
+N'oubliez pas de supprimer le conteneur et l'image après utilisation pour gagner de l'espace:
+
+    docker rm oc-lettings
+    docker rmi -f oc-lettings
+
+### CircleCI
+
+La mise en place du pipline via CircleCI se fait de la mnière suivante:
+
+ 1. Créer un compte [CircleCi](https://circleci.com/).
+ 2. Lier votre compte GitHub hébergeant le projet au compte CircleCI.
+ 3. Choisir le projet dans l'onglet `Projects` puis cliquer sur `Set Up Project`.
+ 4. Sélectionner  `Fastest: Use the .circleci/config.yml in my repo` et choisir la branche `master`.
+
+> `.circleci/config.yml`. est le chemin pour le fichier de configuration du pipline.
+
+ 5. Créer les variables d'environnements suivantes en allant sur le projet, `Project Settings` puis `Environment Variables`:
+
+
+L'environnement CircleCI doit contenir les clés suivantes, à renseigner dans les paramètres du projet, sous l'onglet "Environment variables" :
+
+ - DOCKER_HUB_ACCESS_TOKEN : Token créé à partir du compte dockerhub ([aide](https://docs.docker.com/docker-hub/access-tokens/))
+ - DOCKER_HUB_USERNAME
+ - DOCKER_REPO_NAME : le nom de la repository que vous voulez donner à votre image
+ - HEROKU_API_KEY : ([aide](https://help.heroku.com/PBGP6IDE/how-should-i-generate-an-api-key-that-allows-me-to-use-the-heroku-platform-api))
+ - HEROKU_APP_NAME : le nom de l'application heroku, dans mon cas `oc-letting`.
+ - HEROKU_LOGIN: votre email de connexion à heroku
