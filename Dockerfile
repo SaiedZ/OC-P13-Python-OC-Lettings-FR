@@ -12,7 +12,7 @@ WORKDIR /usr/src/app
 # copy the current directory in you local machine to /app in image
 COPY . .
 
-# install psycopg2 and packages within a virtual environment
+    # install psycopg2 and packages
 RUN pip install --upgrade pip && \
     apk add --virtual build-essential gcc python3-dev musl-dev && \
     apk add postgresql-dev && \
