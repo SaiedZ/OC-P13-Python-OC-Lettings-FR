@@ -129,8 +129,6 @@ flowchart LR
  build-push-docker-- Only Master Branch -->deploy-heroku
 ```
 
-### Configuration
-
 ### Github
 
 Commencez par cloner le projet en local en suivant les étapes indiquées plus haut.
@@ -236,6 +234,7 @@ La base de données utilisée à la création de ce projet est sqlite. Cependant
 Une configuration avec le package dj_database_url a été faite au cas où on voudrait utiliser [l'addon postgresql](https://elements.heroku.com/addons/heroku-postgresql) de heroku.
 
     import dj_database_url
+
     DATABASE_URL = os.environ.get('DATABASE_URL')
     db_from_env = dj_database_url.config(default=DATABASE_URL,  conn_max_age=500,  ssl_require=True)
     DATABASES['default'].update(db_from_env)
@@ -250,7 +249,7 @@ Une configuration avec le package dj_database_url a été faite au cas où on vo
 
 1. Récupérer le nom de l'app et la clé API (dans l'onglet API des paramètres du  [compte Heroku](https://dashboard.heroku.com/account)).
 2. Renseigner dans CircleCI les nouvelles variables d'environnement  `HEROKU_API_KEY`,
-    `HEROKU_APP_NAME`  et `HEROKU_LOGIN`(voir plus    haut).
+    `HEROKU_APP_NAME`  et `HEROKU_LOGIN`([voir plus haut](https://github.com/SaiedZ/OC-P13-Python-OC-Lettings-FR/blob/master/README.md#circleci)).
 3. Aller dans les `settings` de votre application sur heroku puis dans `Config Vars` et rajouter les variables suivantes:
 			 - DEBUG = True
 			 - SECRET_KEY: ajouter la secret key de django
@@ -266,7 +265,7 @@ Sentry est utilisé pour le monitoring de l'application.
  3. Créer un nouveau projet à l'aide du bouton  `Create Project`.
  4. Choisir le type de projet  `Django`, donner un nom au projet et cliquer sur  `Create Project`.
  5. Veuillez noter le DSN qui se trouver dans configuration du projet dans `Client Keys`
- 6. Aller sur heroku et coller la valeur du DSN dans le champ de la variable d'environnement SENTRY_DSN (voir plus haut).
+ 6. Aller sur heroku et coller la valeur du DSN dans le champ de la variable d'environnement SENTRY_DSN (voir [plus haut](https://github.com/SaiedZ/OC-P13-Python-OC-Lettings-FR/blob/master/README.md#heroku)).
 
 >  En cas de doute, la [documentation](https://docs.sentry.io/platforms/python/guides/django/) est là pour vous!
 
