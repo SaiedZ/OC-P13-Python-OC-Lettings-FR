@@ -7,13 +7,10 @@ orbs:
 workflows:
   build_test_push_docker_deploy_heroku:
     jobs:
-      - build-and-test
-      - build-push-docker:
-          requires:
-            - build-and-test # build image and push only if tests succeeded.
+      - build-test-push-docker
       - deploy-heroku:
           requires:
-            - build-push-docker
+            - build-and-test
           filters:
             branches:
               only: master # only deploy when on master
@@ -21,7 +18,7 @@ workflows:
 
 jobs:
 
-  build-and-test:
+  build-test-push-docker:
     # using the machine: true is intresting because we won't need the setup_remote_docker
     machine: true
     steps:
