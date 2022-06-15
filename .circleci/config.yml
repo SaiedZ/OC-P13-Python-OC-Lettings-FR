@@ -26,20 +26,11 @@ jobs:
     machine: true
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/app.tar
       - run:
           name: Build and run Docker image
           command: |
             docker build -t $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 .
             docker run -d --name oc_lettings -e "PORT=8765" -p 8000:8765 $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1
-      - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/app.tar
       - run:
           name: Runing tests
           command: docker exec oc_lettings pytest --html=./test_results/$CIRCLE_SHA1/pytest-report.html --self-contained-html
@@ -48,37 +39,15 @@ jobs:
       - run:
           name: Lingting with flake8
           command: docker exec oc_lettings flake8
-
-  build-push-docker:
-    # docker: # https://circleci.com/docs/2.0/building-docker-images/
-    #  - image: cimg/base:stable # using the machine: true is intresting because we won't need the setup_remote_docker
-    machine: true
-    steps:
-      - checkout
-    #  - setup_remote_docker: # https://circleci.com/docs/2.0/building-docker-images/
-    #      version: 20.10.14
-      - restore_cache:
-          keys:
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/app.tar
-      #- run:
-      #    name: Build Docker image
-      #    command: docker build -t $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 .
       - run:
           name: Loging to Docker
           command: |
             echo "$DOCKER_HUB_ACCESS_TOKEN" | docker login --username $DOCKER_HUB_USERNAME --password-stdin
-      # build the application image
       - run:
-          name: Taging with hash commit and pushing the docker image
+          name: Taging with hash commit and latest and pushing the docker image
           command:  |
             docker tag $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:latest
             docker push $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1
-      - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
-          paths:
-            - /caches/app.tar
 
   deploy-heroku: # this can be any name you choose
       executor: heroku/default # use the default executor defined within the orb
@@ -98,5 +67,3 @@ jobs:
         - run: docker tag $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 registry.heroku.com/$HEROKU_APP_NAME/web
         - run: docker push registry.heroku.com/$HEROKU_APP_NAME/web
         - run: heroku container:release -a $HEROKU_APP_NAME web
-        # - run: heroku run python manage.py -x migrate -a $HEROKU_APP_NAME
-        # - run: heroku run python manage.py -x collectstatic --noinput -a $HEROKU_APP_NAME
