@@ -152,7 +152,7 @@ L'adresse du dépôt docker hub est :  [https://hub.docker.com/r/deias/oc-lettin
 
 Pour copier l'image en local vous pouvez taper: `docker pull deias/oc-lettings:<tag>`
 
-!! Le tag doit être remplacé par version que vous souhaitez récupérer (voir [dockerhub](https://hub.docker.com/r/deias/oc-lettings/tags)).
+> !! Le tag doit être remplacé par la version que vous souhaitez récupérer (voir [dockerhub](https://hub.docker.com/r/deias/oc-lettings/tags)).
 
 #### Créer le Access Token
 
