@@ -12,7 +12,7 @@ WORKDIR /app
 # copy the current directory in you local machine to /app in image
 COPY . .
 
-# install psycopg2 and tpackages
+# install psycopg2 and packages within a virtual environment
 RUN apk update && \
     python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
@@ -24,6 +24,10 @@ RUN apk update && \
 # collect static files and migrate
 RUN /py/bin/python manage.py collectstatic --noinput && \
     /py/bin/python manage.py migrate
+
+# add and run as non-root user
+RUN adduser -D deias_user
+USER deias_user
 
 EXPOSE 8000
 
