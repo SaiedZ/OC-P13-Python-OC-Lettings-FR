@@ -1,4 +1,4 @@
-import django_heroku
+# import django_heroku
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from decouple import config
@@ -125,7 +125,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # This will automatically configure DATABASE_URL, ALLOWED_HOSTS, WhiteNoise (for static assets),
 # Logging, and Heroku CI for your application.
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
 
 # Sentry configuration
 sentry_sdk.init(
