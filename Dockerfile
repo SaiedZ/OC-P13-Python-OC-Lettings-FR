@@ -20,11 +20,7 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt && \
     # collect static files and migrate
     python manage.py collectstatic --noinput && \
-    python manage.py migrate && \
-    # add and run as non-root user
-    adduser -D deias_user
-
-USER deias_user
+    python manage.py migrate
 
 EXPOSE 8000
 
