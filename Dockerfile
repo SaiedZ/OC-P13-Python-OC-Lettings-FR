@@ -13,7 +13,7 @@ WORKDIR /app
 COPY . .
 
 # install psycopg2 and tpackages
-RUN apk update \
+RUN apk update && \
     python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
     apk add --virtual build-essential gcc python3-dev musl-dev && \
