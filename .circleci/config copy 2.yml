@@ -22,32 +22,30 @@ workflows:
 jobs:
 
   build-and-test:
-    # using the machine: true is intresting because we won't need the setup_remote_docker
-    machine: true
+
+    docker:
+      - image: cimg/python:3.10
     steps:
       - checkout
       - restore_cache:
-          keys:
-            - v1-{{ .Branch }}
-          paths:
-            - /caches/app.tar
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
       - run:
-          name: Build and run Docker image
-          command: \
-            docker build -t $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 .
-            docker run -d --name oc_lettings -e "PORT=8765" -p 8000:8765 $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1
+          name: Installing dependencies
+          command: |
+            pip install --upgrade pip &&
+            pip install -r requirements.txt
       - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
           paths:
-            - /caches/app.tar
+            - "venv"
       - run:
           name: Runing tests
-          command: docker exec oc_lettings pytest --html=./test_results/$CIRCLE_SHA1/pytest-report.html --self-contained-html
+          command: pytest --html=./test_results/$CIRCLE_SHA1/pytest-report.html --self-contained-html
       - store_artifacts:
           path: test_results
       - run:
           name: Lingting with flake8
-          command: docker exec oc_lettings pytest flake8
+          command: flake8
 
   build-push-docker:
     # docker: # https://circleci.com/docs/2.0/building-docker-images/
