@@ -223,4 +223,56 @@ L'environnement CircleCI doit contenir les clés suivantes, à renseigner dans l
  - HEROKU_APP_NAME : le nom de l'application heroku, dans mon cas `oc-letting`.
  - HEROKU_LOGIN: votre email de connexion à heroku
 
- ### Heroku
+### Heroku
+
+> [Documentation heroku](https://devcenter.heroku.com/articles/getting-started-with-python)
+
+#### Utilisation de l'application heroku actuelle et principe de fonctionnement
+
+Vous pouvez utiliser l'application via le lien suivant  [https://oc-letting.herokuapp.com/](https://oc-letting.herokuapp.com/).
+
+La base de données utilisée à la création de ce projet est sqlite. Cependant, il est [recommandé d'utiliser Postgresql](https://devcenter.heroku.com/articles/sqlite3).
+
+Une configuration avec le package dj_database_url a été faite au cas où on voudrait utiliser [l'addon postgresql](https://elements.heroku.com/addons/heroku-postgresql) de heroku.
+
+    import dj_database_url
+    DATABASE_URL = os.environ.get('DATABASE_URL')
+    db_from_env = dj_database_url.config(default=DATABASE_URL,  conn_max_age=500,  ssl_require=True)
+    DATABASES['default'].update(db_from_env)
+
+#### Création d'une nouvelle application
+
+ 1. Créer un compte heroku.
+ 2. Se connecter à heroku.
+ 3. Créer une nouvelle application à partir du [Dashboard](https://dashboard.heroku.com/apps)  en cliquant sur le bouton  `New`  puis  `Create new app`.
+
+#### Variables d'environnements
+
+1. Récupérer le nom de l'app et la clé API (dans l'onglet API des paramètres du  [compte Heroku](https://dashboard.heroku.com/account)).
+2. Renseigner dans CircleCI les nouvelles variables d'environnement  `HEROKU_API_KEY`,
+    `HEROKU_APP_NAME`  et `HEROKU_LOGIN`(voir plus    haut).
+3. Aller dans les `settings` de votre application sur heroku puis dans `Config Vars` et rajouter les variables suivantes:
+			 - DEBUG = True
+			 - SECRET_KEY: ajouter la secret key de django
+			 - SENTRY_DSN: sentry DSN, voir plus bas comment le récupérer.
+			 - SENTRY_ENVIRONMENT = production
+
+### Sentry
+
+Sentry est utilisé pour le monitoring de l'application.
+
+ 1. Créer un compte sur le site [https://sentry.io/](https://sentry.io/)
+ 2.  Se connecter à Sentry.
+ 3. Créer un nouveau projet à l'aide du bouton  `Create Project`.
+ 4. Choisir le type de projet  `Django`, donner un nom au projet et cliquer sur  `Create Project`.
+ 5. Veuillez noter le DSN qui se trouver dans configuration du projet dans `Client Keys`
+ 6. Aller sur heroku et coller la valeur du DSN dans le champ de la variable d'environnement SENTRY_DSN (voir plus haut).
+
+>  En cas de doute, la [documentation](https://docs.sentry.io/platforms/python/guides/django/) est là pour vous!
+
+Les erreurs seront remontées sur le tableau de bord sur sentry.
+Vous pouvez générer une erreur en allant sur le lien suivant `https://{nom de l'app Heroku}.herokuapp.com/sentry-debug/`
+
+### Accès à l'application
+
+Visitez l'adresse suivante:  `https://{nom de l'app Heroku}.herokuapp.com`.
