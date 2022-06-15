@@ -47,7 +47,7 @@ jobs:
           path: test_results
       - run:
           name: Lingting with flake8
-          command: docker exec oc_lettings pytest flake8
+          command: docker exec oc_lettings flake8
 
   build-push-docker:
     # docker: # https://circleci.com/docs/2.0/building-docker-images/
