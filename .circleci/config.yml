@@ -7,10 +7,13 @@ orbs:
 workflows:
   build_test_push_docker_deploy_heroku:
     jobs:
-      - build-test-push-docker
+      - compile-and-test-local-environment
+      - build-push-docker:
+          requires:
+            - compile-and-test-local-environment # build image and push only if tests succeeded.
       - deploy-heroku:
           requires:
-            - build-test-push-docker
+            - build-push-docker
           filters:
             branches:
               only: master # only deploy when on master
@@ -18,30 +21,40 @@ workflows:
 
 jobs:
 
-  build-test-push-docker:
-    # using the machine: true is intresting because we won't need the setup_remote_docker
-    machine: true
+  compile-and-test-local-environment:
+
+    docker:
+      - image: cimg/python:3.10
     steps:
       - checkout
       - run:
-          name: Build and run Docker image
+          name: Installing dependencies
           command: |
-            docker build -t $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 .
-            docker run -d --name oc_lettings -e "PORT=8765" -p 8000:8765 $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1
+            pip install --upgrade pip &&
+            pip install -r requirements.txt
       - run:
           name: Runing tests
-          command: docker exec oc_lettings pytest --html=./test_results/$CIRCLE_SHA1/pytest-report.html --self-contained-html
+          command: pytest --html=./test_results/$CIRCLE_SHA1/pytest-report.html --self-contained-html
       - store_artifacts:
           path: test_results
       - run:
           name: Lingting with flake8
-          command: docker exec oc_lettings flake8
+          command: flake8
+
+  build-push-docker:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Build Docker image
+          command: docker build -t $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 .
       - run:
           name: Loging to Docker
           command: |
             echo "$DOCKER_HUB_ACCESS_TOKEN" | docker login --username $DOCKER_HUB_USERNAME --password-stdin
+      # build the application image
       - run:
-          name: Taging with hash commit and latest and pushing the docker image
+          name: Taging with hash commit and pushing the docker image
           command:  |
             docker tag $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1 $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:latest
             docker push $DOCKER_HUB_USERNAME/$DOCKER_REPO_NAME:$CIRCLE_SHA1
