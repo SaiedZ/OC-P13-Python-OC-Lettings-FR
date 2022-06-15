@@ -83,3 +83,58 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
 
 
+## CI/CD - Intégration continue / déploiement continu
+
+### Description du process CI/CD
+
+Le pipeline a été mis en place via CircleCi. Il est constitué des étapes suivantes :
+
+-   Compilation et test de l'environnement local
+-   Création de l'image Docker, via le fichier Dockerfile, et téléchargement vers le dockerhub.
+-   Déploiement sur heroku  à partir de l'image envoyée précédemment sur dockerhub.
+
+> *Chaque étape doit être complétée avec succès pour passer à la suivante.*
+> *La troisième étape à savoir le déploiement sur heroku n'est enclenché que les commit faits sur la branche **master**.*
+
+Chacune de ces trois étapes est détaillées dans le graph ci-dessous.
+
+```mermaid
+flowchart LR
+		 subgraph compile-and-test-local-environment
+		 	 id1([checkout])
+			 id2([Installing dependencies])
+			 id3([Runing tests])
+			 id4([Lingting with flake8])
+			 id999([Store pytest report to artifact])
+			 id1-->id2-->id3-->id4-->id999
+		 end
+		 subgraph build-push-docker
+			 id5([checkout])
+			 id6([Build Docker image])
+			 id7([Loging to Docker])
+			 id8([Taging with hash commit and pushing the docker image])
+			 id5-->id6-->id7-->id8
+		 end
+		 subgraph deploy-heroku
+			 id9([checkout])
+			 id10([Loging to Docker])
+			 id11([Login to Heroku])
+			 id12([Pull docker image])
+			 id13([tagging docker image])
+			 id14([pushing to heroku registry])
+			 id15([releasing app])
+			 id9-->id10-->id11-->id12-->id13-->id14-->id15
+		 end
+ compile-and-test-local-environment --> build-push-docker
+ build-push-docker-- Only Master Branch -->deploy-heroku
+```
+
+### Configuration
+
+#### Prérequis
+
+-   Un compte GitHub
+-   Un compte Docker et installation en local
+-   Un compte CircleCI relié au compte Github
+-   Un compte Heroku
+-   Un compte Sentry
