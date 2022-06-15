@@ -10,7 +10,7 @@ workflows:
       - build-test-push-docker
       - deploy-heroku:
           requires:
-            - build-and-test
+            - build-test-push-docker
           filters:
             branches:
               only: master # only deploy when on master
