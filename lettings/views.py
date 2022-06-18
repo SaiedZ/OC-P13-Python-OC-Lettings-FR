@@ -31,7 +31,7 @@ def index(request):
     return render(request, 'lettings/index.html', context)
 
 
-#Cras ultricies dignissim purus, vitae hendrerit ex varius non. In accumsan porta nisl id
+# Cras ultricies dignissim purus, vitae hendrerit ex varius non. In accumsan porta nisl id
 # eleifend. Praesent dignissim, odio eu consequat pretium, purus urna vulputate arcu, vitae
 # efficitur
 #  lacus justo nec purus. Aenean finibus faucibus lectus at porta. Maecenas auctor, est ut luctus
