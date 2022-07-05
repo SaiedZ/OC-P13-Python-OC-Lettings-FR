@@ -1,3 +1,7 @@
+""""
+Views module to handle the index view.
+"""
+
 from django.shortcuts import render
 
 
