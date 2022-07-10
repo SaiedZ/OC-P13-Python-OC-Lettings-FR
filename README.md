@@ -251,7 +251,7 @@ Une configuration avec le package dj_database_url a été faite au cas où on vo
 2. Renseigner dans CircleCI les nouvelles variables d'environnement  `HEROKU_API_KEY`,
     `HEROKU_APP_NAME`  et `HEROKU_LOGIN`([voir plus haut](https://github.com/SaiedZ/OC-P13-Python-OC-Lettings-FR/blob/master/README.md#circleci)).
 3. Aller dans les `settings` de votre application sur heroku puis dans `Config Vars` et rajouter les variables suivantes:
-			 - DEBUG = True
+			 - DEBUG = False
 			 - SECRET_KEY: ajouter la secret key de django
 			 - SENTRY_DSN: sentry DSN, voir plus bas comment le récupérer.
 			 - SENTRY_ENVIRONMENT = production
