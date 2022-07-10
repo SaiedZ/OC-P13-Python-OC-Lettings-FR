@@ -1,4 +1,4 @@
-""""
+"""
 Views module to handle the index view.
 """
 
